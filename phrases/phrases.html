@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Phrase List - Sign Rearranger</title>
+        <script src="words.js"></script>
+        <script>
+            var tempWords;
+            window.onload = function()
+            {
+                document.getElementById("main").innerHTML = words.join("<br>");
+            }
+            function edit()
+            {
+                tempWords = words;
+
+                var main = new Array();
+                for (let i = 0; i < words.length; i++) {
+                    main.push(`<div id="${i}"><input type="button" value="remove" onclick="remove(${i})">${words[i]}</div>`);
+
+                }
+                document.getElementById("main").innerHTML = main.join("");
+
+                document.getElementById("header").innerHTML = `<input type="button" value="confirm edit" onclick="exitEdit()">
+                <input type="button" value="cancel edit" onclick="cancelEdit()">
+                <input type="button" value="restore defaults" onclick="restore()">
+                <input type="button" value="remove all" onclick="removeAll()"><br><br>
+                <form onsubmit="addItem()" method="post"><textarea placeholder="insert phrase" id="insert" cols="20"></textarea> <button type="submit" value="add">add</button> </form>
+                `;
+            }
+            function remove(index)
+            {
+                words.splice(index, 1);
+                
+                document.getElementById(index).remove();
+                console.log(words);
+            }
+
+            function exitEdit()
+            {
+                tempWords = null;
+                document.getElementById("main").innerHTML = words.join("<br>");
+                document.getElementById("header").innerHTML = `<input type="button" value="edit" onclick="edit()"><br><br>`;
+                localStorage.setItem("inappropriate_phrases_list", JSON.stringify(words));
+            }
+
+            function removeAll()
+            {
+                words = new Array();
+                document.getElementById("main").innerHTML = "";
+            }
+
+            function addItem()
+            {
+                event.preventDefault();
+                var word = document.getElementById("insert").value.split("\n").reverse();
+                var a = false;
+                for (let ii = 0; ii < word.length; ii++) {
+                    if(word[ii].length > 0)
+                    {
+                        a = true;
+                        words.unshift(word[ii]);
+                        for (let i = 1; i < words.length; i++) {
+                            if(words[i] == word)
+                            {
+                                words.splice(i, 1);
+                            }
+                        }
+                    }
+                }
+                if(a)
+                {
+                    var main = new Array();
+                    for (let i = 0; i < words.length; i++) {
+                        main.push(`<div><input type="button" value="remove" onclick="remove(${i})">${words[i]}</div>`);
+                    }
+                    document.getElementById("main").innerHTML = main.join("");
+                }
+            }
+
+            function cancelEdit()
+            {
+                words = tempWords;
+                var main = new Array();
+                for (let i = 0; i < words.length; i++) {
+                    main.push(`<div><input type="button" value="remove" onclick="remove(${i})">${words[i]}</div>`);
+                }
+                document.getElementById("main").innerHTML = main.join("");
+            }
+
+            function restore()
+            {
+                console.log("restore");
+                words = defaultWords;
+                var main = new Array();
+                for (let i = 0; i < words.length; i++) {
+                    main.push(`<div><input type="button" value="remove" onclick="remove(${i})">${words[i]}</div>`);
+                }
+                document.getElementById("main").innerHTML = main.join("");
+            }
+        </script>
+    </head>
+    <body>
+        <a href="..">Back To Home</a>
+        <div id="header">
+            <input type="button" value="edit" onclick="edit()">
+            <br><br>
+        </div>
+        <div id="main"></div>
+    </body>
+</html>
