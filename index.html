@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Phrase Finder - Sign Rearranger</title>
+        <script src="words.js"></script>
+        <script>
+            function match(array, word){
+                var char_array = word.split(''),
+                    char, index;
+                array = array.join('').split('');
+                while(char_array.length > 0){
+                    char = char_array.shift();
+                    if ((index = array.indexOf(char)) > -1)
+                        array.splice(index, 1);
+                    else
+                        return false;
+                }
+                return true;
+            }
+            function btnClick()
+            {
+                letters = document.getElementById("input").value;
+                var viableWords = new Array;
+                for (let i = 0; i < words.length; i++) {
+                    const element = words[i];
+                    const str = Array.from(element);
+
+                    if(match(Array.from(letters), element))
+                    {
+                        viableWords.push(element);
+                    }
+                }
+                console.log(viableWords);
+                document.getElementById("words").innerHTML = viableWords.join("<br>");
+            }
+        </script>
+        <style>
+            body
+            {
+                font-family: Arial;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Sign Rearranger</h1>
+        <p>Enter letters of the sign to be rearanged into offensive phrases.</p>
+        <br>
+        
+        <input type="text" placeholder="enter letters here" id="input">
+        <input type="button" value="Find Phrases" onclick="btnClick()">
+
+        <div id="words">
+        </div>
+        <br>
+        <a href="phrases">See Phrases</a>
+    </body> 
+</html>
